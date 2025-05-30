@@ -46,3 +46,7 @@ app.use('/api/experiences', expRoutes);
 
 const resRoutes  = require('./routes/reservations.routes');
 app.use('/api/reservations', resRoutes);
+
+
+const ratRoutes = require('./routes/ratings.routes');
+app.use('/api/ratings', ratRoutes);

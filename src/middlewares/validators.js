@@ -78,3 +78,13 @@ exports.reservationRules = [
   body('metodo_pago').isIn(['Lugar', 'Transferencia'])
                       .withMessage('Método debe ser Lugar o Transferencia')
 ];
+
+
+
+/* 8. Reglas de rating */
+exports.ratingRules = [
+  body('reservation_id').isInt({ min: 1 }),
+  body('puntuacion').isInt({ min: 1, max: 5 })
+                     .withMessage('Puntuación debe estar entre 1 y 5'),
+  body('comentario').optional().isLength({ max: 500 })
+];
