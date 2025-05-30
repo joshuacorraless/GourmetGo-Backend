@@ -22,9 +22,7 @@ app.get('/db-test', async (_req, res, next) => {
   }
 });
 
-// ──────────── Aquí montarás más rutas: ────────────
-// const authRoutes = require('./routes/auth.routes');
-// app.use('/api/auth', authRoutes);
+
 
 // ──────────── Error handler global ────────────
 app.use(errorHandler);
@@ -33,3 +31,8 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
 });
+
+// ──────────── Aquí montare más rutas: ────────────
+
+const authRoutes = require('./routes/auth.routes');
+app.use('/api/auth', authRoutes);
