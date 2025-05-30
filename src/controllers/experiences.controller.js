@@ -94,8 +94,12 @@ exports.requestDelete = async (req, res) => {
   if (!rows.length) return res.status(403).json({ msg: 'No autorizado' });
   if (rows[0].estado === 'Agotado')
     return res.status(400).json({ msg: 'No se puede borrar una experiencia agotada' });
-
-  const code    = crypto.randomInt(100000, 999999).toString();
+  const digits = crypto.randomInt(1000, 9999).toString();         // 4 dígitos
+  const letters = crypto.randomBytes(2).toString('hex')           // 4 hex = 2 bytes
+                     .toUpperCase()
+                    .replace(/[^A-Z]/g, '')
+                     .slice(0,3);                                 // 3 letras
+ const code = digits + letters;          // ####AAA
   const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
 
   await db.query(
@@ -116,7 +120,9 @@ exports.requestDelete = async (req, res) => {
 /* ---------- Borrar experiencia ---------- */
 exports.remove = async (req, res) => {
   const id   = req.params.id;
-  const code = req.body.code || '';
+  const code = (req.body.code || '').toUpperCase();
+  if (!/^\d{4}[A-Z]{3}$/.test(code))
+      return res.status(400).json({ msg: 'Código con formato inválido' });
 
   const [rows] = await db.query(
     `SELECT * FROM exp_delete_codes

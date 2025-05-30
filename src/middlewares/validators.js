@@ -51,7 +51,10 @@ exports.experienceRules = [
   ).withMessage('Debe ser URL de Google Maps'),
 
   body('capacidad').isInt({ min: 1 }).withMessage('Capacidad > 0'),
-  body('precio').isFloat({ min: 1 }).withMessage('Precio > 0')
+  body('precio').isFloat({ min: 1 }).withMessage('Precio > 0'),
+  body('duracion_h').isFloat({ min: 0.1 })
+  .withMessage('Duración (horas) requerida y > 0')
+
 ];
 
 
@@ -66,6 +69,9 @@ exports.experienceUpdateRules = [
         /^https:\/\/(?:www\.)?(?:google\.[^\/]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps).*$/i
   ).withMessage('Debe ser URL de Google Maps'),
   body('capacidad').optional().isInt({ min: 1 }),
+  body('duracion_h').isFloat({ min: 0.1 })
+  .withMessage('Duración (horas) requerida y > 0'),
+
   body('precio').optional().isFloat({ min: 1 })
 ];
 
