@@ -39,3 +39,30 @@ exports.profileRules = [
   body('identificacion').optional().matches(/^\d{9}$/ ).withMessage('Cédula 9 dígitos'),
   body('foto_url'      ).optional().isURL().withMessage('URL de la foto inválida')
 ];
+
+/* 6. Validación de creación / edición de experiencia */
+exports.experienceRules = [
+  body('nombre').notEmpty().withMessage('Nombre requerido'),
+  body('descripcion').notEmpty(),
+  body('fecha_hora').isISO8601().withMessage('Fecha inválida')
+     .custom(v => new Date(v) >= new Date()).withMessage('Fecha debe ser futura'),
+  body('ubicacion').matches(/^https:\/\/.*google.*maps.*/i)
+     .withMessage('Debe ser URL de Google Maps'),
+  body('capacidad').isInt({ min: 1 }).withMessage('Capacidad > 0'),
+  body('precio').isFloat({ min: 1 }).withMessage('Precio > 0')
+];
+
+
+exports.experienceUpdateRules = [
+  body('nombre').optional().notEmpty(),
+  body('descripcion').optional().notEmpty(),
+  body('fecha_hora').optional().isISO8601()
+       .withMessage('Fecha inválida')
+       .custom(v => new Date(v) >= new Date())
+       .withMessage('Fecha debe ser futura'),
+  body('ubicacion').optional().matches(
+        /^https:\/\/(?:www\.)?(?:google\.[^\/]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps).*$/i
+  ).withMessage('Debe ser URL de Google Maps'),
+  body('capacidad').optional().isInt({ min: 1 }),
+  body('precio').optional().isFloat({ min: 1 })
+];

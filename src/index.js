@@ -39,3 +39,7 @@ app.use('/api/auth', authRoutes);
 
 const userRoutes  = require('./routes/users.routes');
 app.use('/api/users', userRoutes);
+
+
+const expRoutes  = require('./routes/experiences.routes');
+app.use('/api/experiences', expRoutes);

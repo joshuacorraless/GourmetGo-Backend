@@ -35,7 +35,7 @@ exports.loginUser = async (req, res) => {
 
   try {
     const [rows] = await db.query(
-      'SELECT id, contrasena, must_change_pw FROM users WHERE correo = ?',
+      'SELECT id, rol, contrasena, must_change_pw FROM users WHERE correo = ?',
       [correo]
     );
     if (!rows.length) return res.status(400).json({ msg: 'Credenciales inválidas' });
@@ -45,10 +45,11 @@ exports.loginUser = async (req, res) => {
     if (!passOK) return res.status(400).json({ msg: 'Credenciales inválidas' });
 
     const token = jwt.sign(
-      { id: user.id, correo },
-      process.env.JWT_SECRET,
-      { expiresIn: '2h' }
-    );
+  { id: user.id, correo, rol: user.rol },
+  process.env.JWT_SECRET,
+  { expiresIn: '2h' }
+);
+
 
     res.json({ token, must_change_pw: !!user.must_change_pw });
   } catch (err) {
