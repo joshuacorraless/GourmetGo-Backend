@@ -44,9 +44,14 @@ app.use('/api/users', userRoutes);
 const expRoutes  = require('./routes/experiences.routes');
 app.use('/api/experiences', expRoutes);
 
+//reservations
 const resRoutes  = require('./routes/reservations.routes');
 app.use('/api/reservations', resRoutes);
 
-
+// ratings
 const ratRoutes = require('./routes/ratings.routes');
 app.use('/api/ratings', ratRoutes);
+
+// export pdf y csv
+const exporRoutes = require('./routes/export.routes');
+app.use('/api/export', exporRoutes);
