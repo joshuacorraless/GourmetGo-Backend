@@ -31,3 +31,11 @@ exports.check = (req, res, next) => {
   }
   next();
 };
+
+
+/* 5. Validación de edición de perfil */
+exports.profileRules = [
+  body('telefono'      ).optional().matches(/^\d{8}$/ ).withMessage('Teléfono 8 dígitos'),
+  body('identificacion').optional().matches(/^\d{9}$/ ).withMessage('Cédula 9 dígitos'),
+  body('foto_url'      ).optional().isURL().withMessage('URL de la foto inválida')
+];
