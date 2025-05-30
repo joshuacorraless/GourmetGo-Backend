@@ -46,8 +46,10 @@ exports.experienceRules = [
   body('descripcion').notEmpty(),
   body('fecha_hora').isISO8601().withMessage('Fecha inválida')
      .custom(v => new Date(v) >= new Date()).withMessage('Fecha debe ser futura'),
-  body('ubicacion').matches(/^https:\/\/.*google.*maps.*/i)
-     .withMessage('Debe ser URL de Google Maps'),
+  body('ubicacion').matches(
+    /^https:\/\/(?:www\.)?(?:google\.[^\/]+\/maps|maps\.app\.goo\.gl|goo\.gl\/maps).*$/i
+  ).withMessage('Debe ser URL de Google Maps'),
+
   body('capacidad').isInt({ min: 1 }).withMessage('Capacidad > 0'),
   body('precio').isFloat({ min: 1 }).withMessage('Precio > 0')
 ];
