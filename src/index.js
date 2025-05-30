@@ -43,3 +43,6 @@ app.use('/api/users', userRoutes);
 
 const expRoutes  = require('./routes/experiences.routes');
 app.use('/api/experiences', expRoutes);
+
+const resRoutes  = require('./routes/reservations.routes');
+app.use('/api/reservations', resRoutes);

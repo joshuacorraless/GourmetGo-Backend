@@ -66,3 +66,15 @@ exports.experienceUpdateRules = [
   body('capacidad').optional().isInt({ min: 1 }),
   body('precio').optional().isFloat({ min: 1 })
 ];
+
+
+/* 7. Reglas de reserva */
+exports.reservationRules = [
+  body('experience_id').isInt({ min: 1 }),
+  body('nombre_entrada').notEmpty(),
+  body('correo_entrada').isEmail(),
+  body('telefono_entry').matches(/^\d{8}$/),
+  body('cantidad').isInt({ min: 1 }),
+  body('metodo_pago').isIn(['Lugar', 'Transferencia'])
+                      .withMessage('Método debe ser Lugar o Transferencia')
+];
