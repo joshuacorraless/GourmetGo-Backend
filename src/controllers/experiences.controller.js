@@ -22,6 +22,35 @@ exports.create = async (req, res) => {
   res.status(201).json({ msg: 'Experiencia creada' });
 };
 
+/*-------------Filtrar Eventos-----------*/
+exports.getFiltered = async (req, res) => {
+  try {
+    const {
+      provincia = null,categoria = null,
+      calif_min = null, calif_max = null,
+      precio_min = null,precio_max = null,
+      fecha_inicio = null,fecha_fin = null
+    } = req.body; // se toma del body pq es un json
+
+    const [rows] = await db.query(
+      `CALL filtrar_experiencias(?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        provincia || null,categoria || null,calif_min || null,
+        calif_max || null,precio_min || null,precio_max || null,
+        fecha_inicio || null,fecha_fin || null
+      ]
+    );
+
+    res.json(rows[0]); // El resultado de un SP lo mando como row
+  } catch (error) {
+    console.error("Error ejecutando SP:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+
+
+
 /* ---------- Listar todas ---------- */
 exports.getAll = async (_req, res) => {
   const [rows] = await db.query(

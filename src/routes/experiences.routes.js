@@ -8,6 +8,7 @@ const v         = require('../middlewares/validators');
 /* Públicas */
 router.get('/',        ctrl.getAll);
 router.get('/:id',     ctrl.getById);
+router.post('/filtrar',        ctrl.getFiltered);
 
 /* Protegidas (CHEF) */
 router.post('/',

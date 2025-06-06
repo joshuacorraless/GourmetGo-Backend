@@ -5,7 +5,7 @@ exports.getMe = async (req, res) => {
   const userId = req.user.id;
   const [rows] = await db.query(
     `SELECT id, nombre, correo, telefono, identificacion,
-            foto_url, preferencias, creado_en
+            foto_url, preferencias, creado_en,must_change_pw
      FROM users WHERE id = ?`,
     [userId]
   );
