@@ -28,7 +28,7 @@ app.get('/db-test', async (_req, res, next) => {
 app.use(errorHandler);
 
 // ──────────── Levantar servidor ────────────
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Servidor escuchando en puerto ${PORT}`);
 });
 

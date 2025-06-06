@@ -35,12 +35,14 @@ exports.loginUser = async (req, res) => {
 
   try {
     const [rows] = await db.query(
-      'SELECT id, rol, contrasena, must_change_pw FROM users WHERE correo = ?',
+      'SELECT id, rol, contrasena FROM users WHERE correo = ?',
       [correo]
     );
     if (!rows.length) return res.status(400).json({ msg: 'Credenciales inválidas' });
 
     const user = rows[0];
+    const id = user.id;
+    const rol = user.rol;
     const passOK = await bcrypt.compare(contrasena, user.contrasena);
     if (!passOK) return res.status(400).json({ msg: 'Credenciales inválidas' });
 
@@ -51,7 +53,7 @@ exports.loginUser = async (req, res) => {
 );
 
 
-    res.json({ token, must_change_pw: !!user.must_change_pw });
+    res.json({ rol,id,token, must_change_pw: !!user.must_change_pw });
   } catch (err) {
     console.error('loginUser:', err);
     res.status(500).json({ msg: 'Error del servidor' });

@@ -27,7 +27,7 @@ exports.getAll = async (_req, res) => {
   const [rows] = await db.query(
     `SELECT e.*, u.nombre AS anfitrion
        FROM experiences e
-       JOIN users u ON u.id = e.host_id
+       JOIN users u ON u.id = e.chef_id
      ORDER BY fecha_hora`
   );
   res.json(rows);
