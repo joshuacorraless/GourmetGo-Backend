@@ -5,18 +5,18 @@ exports.create = async (req, res) => {
   const userId = req.user.id;
   const { reservation_id, puntuacion, comentario } = req.body;
 
-  /* 1) Verificar que la reserva pertenece al usuario y fue asistida */
+  /* 1) Verificar reserva del usuario y estado Asistido */
   const [[resv]] = await db.query(
     `SELECT estado, experience_id
        FROM reservations
       WHERE id = ? AND user_id = ?`,
     [reservation_id, userId]
   );
-  if (!resv)  return res.status(403).json({ msg: 'Reserva no encontrada' });
+  if (!resv)   return res.status(403).json({ msg: 'Reserva no encontrada' });
   if (resv.estado !== 'Asistido')
       return res.status(400).json({ msg: 'Solo puedes calificar reservas asistidas' });
 
-  /* 2) ¿Ya existe rating? */
+  /* 2) Evitar duplicado */
   const [[dup]] = await db.query(
     'SELECT id FROM ratings WHERE reservation_id = ?',
     [reservation_id]
@@ -30,7 +30,27 @@ exports.create = async (req, res) => {
     [reservation_id, puntuacion, comentario]
   );
 
-  res.status(201).json({ msg: '¡Gracias por tu calificación!' });
+  /* 4) Calcular nuevo promedio y actualizar experiencia */
+  const [[avgRow]] = await db.query(
+    `SELECT AVG(puntuacion) AS promedio
+       FROM ratings r
+       JOIN reservations rs ON rs.id = r.reservation_id
+      WHERE rs.experience_id = ?`,
+    [resv.experience_id]
+  );
+
+  const nuevoProm = Number(avgRow.promedio).toFixed(1);   // ej. 4.3
+
+  await db.query(
+    'UPDATE experiences SET calificacion = ? WHERE id = ?',
+    [nuevoProm, resv.experience_id]
+  );
+
+  /* 5) Respuesta final */
+  return res.status(201).json({
+    msg: '¡Gracias por tu calificación!',
+    calificacion_promedio: nuevoProm
+  });
 };
 
 /* ---------- Listar ratings por experiencia ---------- */
