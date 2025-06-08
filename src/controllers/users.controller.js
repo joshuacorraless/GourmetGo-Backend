@@ -1,31 +1,30 @@
-const db = require('../../config/db');
-
 /* -------- GET /users/me -------- */
 exports.getMe = async (req, res) => {
   const userId = req.user.id;
-  const [rows] = await db.query(
-    `SELECT id, nombre, correo, telefono, identificacion,
-            foto_url, preferencias, creado_en,must_change_pw
-     FROM users WHERE id = ?`,
-    [userId]
-  );
-  res.json(rows[0]);
+  const [[u]] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+  res.json(u);
 };
 
 /* -------- PUT /users/me -------- */
 exports.updateMe = async (req, res) => {
   const userId = req.user.id;
-  const { telefono, identificacion, foto_url, preferencias } = req.body;
+  const rol    = req.user.rol;   // viene del JWT
 
-  await db.query(
-    `UPDATE users
-       SET telefono = COALESCE(?, telefono),
-           identificacion = COALESCE(?, identificacion),
-           foto_url = COALESCE(?, foto_url),
-           preferencias = COALESCE(?, preferencias)
-     WHERE id = ?`,
-    [telefono, identificacion, foto_url, preferencias, userId]
-  );
+  const campos = (rol === 'USER')
+    ? ['telefono','identificacion','foto_url','preferencias']
+    : ['contacto','telefono','ubicacion','tipo_cocina','foto_url'];
 
-  res.json({ msg: 'Perfil actualizado' });
+  const set  = [];
+  const vals = [];
+  campos.forEach(c => {
+    if (req.body[c] !== undefined) {
+      set.push(`${c} = ?`);
+      vals.push(req.body[c]);
+    }
+  });
+  if (!set.length) return res.json({ msg:'Sin cambios' });
+
+  vals.push(userId);
+  await db.query(`UPDATE users SET ${set.join(', ')} WHERE id = ?`, vals);
+  res.json({ msg:'Perfil actualizado' });
 };

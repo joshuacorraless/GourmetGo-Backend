@@ -5,7 +5,16 @@ const v       = require('../middlewares/validators');
 const verify  = require('../middlewares/authJwt');
 
 /* Registro */
-router.post('/register', v.registerRules, v.check, ctrl.registerUser);
+router.post('/register/user',
+  v.registerUserRules, v.check,
+  authCtrl.registerUser
+);
+
+router.post('/register/chef',
+  v.registerChefRules, v.check,
+  authCtrl.registerChef
+);
+
 
 /* Login */
 router.post('/login', v.loginRules, v.check, ctrl.loginUser);

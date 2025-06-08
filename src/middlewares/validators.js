@@ -1,14 +1,5 @@
 const { validationResult, body } = require('express-validator');
 
-/* 1. Validación de registro */
-exports.registerRules = [
-  body('nombre'     ).notEmpty().withMessage('El nombre es requerido'),
-  body('correo'     ).isEmail().withMessage('Correo inválido'),
-  body('telefono'   ).optional().matches(/^\d{8}$/).withMessage('Teléfono 8 dígitos'),
-  body('identificacion').optional().matches(/^\d{9}$/).withMessage('Cédula 9 dígitos'),
-  body('contrasena' ).matches(/^(?=(?:.*[A-Za-z]){6})(?=(?:.*\d){4})(?=.*\.)[A-Za-z\d\.]{11}$/)
-                     .withMessage('Password = 6 letras, 4 números y un punto')
-];
 
 /* 2. Validación de login */
 exports.loginRules = [
@@ -33,12 +24,58 @@ exports.check = (req, res, next) => {
 };
 
 
-/* 5. Validación de edición de perfil */
-exports.profileRules = [
-  body('telefono'      ).optional().matches(/^\d{8}$/ ).withMessage('Teléfono 8 dígitos'),
-  body('identificacion').optional().matches(/^\d{9}$/ ).withMessage('Cédula 9 dígitos'),
-  body('foto_url'      ).optional().isURL().withMessage('URL de la foto inválida')
+
+
+/* A. Reglas de registro para USER - acaaaaaaaaaaaa */
+exports.registerUserRules = [
+  body('nombre').notEmpty(),
+  body('correo').isEmail(),
+  body('telefono').matches(/^\d{8}$/),
+  body('identificacion').matches(/^\d{9}$/),
+  body('contrasena').matches(/^(?=(?:.*[A-Za-z]){6})(?=(?:.*\d){4})(?=.*\.)[A-Za-z\d\.]{11}$/),
+  body('foto_url').isURL(),
+  body('preferencias').optional().isLength({ max: 255 })
 ];
+
+/* B. Reglas de registro para CHEF/RESTAURANT */
+exports.registerChefRules = [
+  body('nombre').notEmpty(),
+  body('contacto').notEmpty(),
+  body('correo').isEmail(),
+  body('telefono').matches(/^\d{8}$/),
+  body('ubicacion').notEmpty(),        // enlace de Maps o dirección
+  body('tipo_cocina').notEmpty(),
+  body('contrasena').matches(/^(?=(?:.*[A-Za-z]){6})(?=(?:.*\d){4})(?=.*\.)[A-Za-z\d\.]{11}$/),
+  body('foto_url').isURL()
+];
+
+/* C. Reglas de edición genéricas: USER o CHEF */
+exports.profileUserRules = [
+  body('telefono').optional().matches(/^\d{8}$/),
+  body('identificacion').optional().matches(/^\d{9}$/),
+  body('foto_url').optional().isURL(),
+  body('preferencias').optional().isLength({ max:255 })
+];
+
+exports.profileChefRules = [
+  body('contacto').optional().notEmpty(),
+  body('telefono').optional().matches(/^\d{8}$/),
+  body('ubicacion').optional().notEmpty(),
+  body('tipo_cocina').optional().notEmpty(),
+  body('foto_url').optional().isURL()
+];
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* 6. Validación de creación / edición de experiencia */
 exports.experienceRules = [
@@ -56,6 +93,9 @@ exports.experienceRules = [
   .withMessage('Duración (horas) requerida y > 0')
 
 ];
+
+
+
 
 
 exports.experienceUpdateRules = [
