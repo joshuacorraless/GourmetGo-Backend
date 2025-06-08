@@ -1,3 +1,5 @@
+const db = require('../../config/db');
+
 /* -------- GET /users/me -------- */
 exports.getMe = async (req, res) => {
   const userId = req.user.id;

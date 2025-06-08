@@ -5,9 +5,47 @@ const db          = require('../../config/db');
 const transporter = require('../../config/mail');
 require('dotenv').config();
 
+/* ---------- Registro de chef / restaurante ---------- */
+exports.registerChef = async (req, res) => {
+  const {
+    nombre,           // nombre del establecimiento o chef
+    contacto,         // persona de contacto
+    correo,
+    telefono,
+    ubicacion,        // enlace o dirección
+    tipo_cocina,
+    contrasena,
+    foto_url
+  } = req.body;
+
+  try {
+    /* 1) ¿Correo ya existe? */
+    const [exist] = await db.query('SELECT id FROM users WHERE correo = ?', [correo]);
+    if (exist.length) return res.status(400).json({ msg: 'Correo ya registrado' });
+
+    /* 2) Hash + inserción con rol CHEF (o RESTAURANT) */
+    const hash = await bcrypt.hash(contrasena, 10);
+    await db.query(
+      `INSERT INTO users
+        (nombre, contacto, correo, telefono, ubicacion,
+         tipo_cocina, foto_url, contrasena, rol)
+       VALUES (?,?,?,?,?,?,?,?, 'CHEF')`,
+      [nombre, contacto, correo, telefono, ubicacion,
+       tipo_cocina, foto_url, hash]
+    );
+
+    res.status(201).json({ msg: 'Chef / Restaurante registrado, ahora inicia sesión' });
+  } catch (err) {
+    console.error('registerChef:', err);
+    res.status(500).json({ msg: 'Error del servidor' });
+  }
+};
+
+
+
 /* ---------- Registro ---------- */
 exports.registerUser = async (req, res) => {
-  const { nombre, correo, telefono, identificacion, contrasena } = req.body;
+  const { nombre, correo, telefono, identificacion, contrasena,preferencias,foto_url } = req.body;
 
   try {
     /* 1) ¿Existe ese correo? */
@@ -17,9 +55,9 @@ exports.registerUser = async (req, res) => {
     /* 2) Hash y alta */
     const hash = await bcrypt.hash(contrasena, 10);
     await db.query(
-      `INSERT INTO users (nombre, correo, telefono, identificacion, contrasena)
-       VALUES (?, ?, ?, ?, ?)`,
-      [nombre, correo, telefono, identificacion, hash]
+      `INSERT INTO users (nombre, correo, telefono, identificacion, contrasena, preferencias,foto_url,rol)
+       VALUES (?, ?, ?, ?, ?,?,?,?)`,
+      [nombre, correo, telefono, identificacion, hash,preferencias,foto_url,"USER"]
     );
 
     res.status(201).json({ msg: 'Usuario registrado, ahora inicia sesión' });
