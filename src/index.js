@@ -6,7 +6,8 @@ const errorHandler= require('./middlewares/errorHandler');
 
 dotenv.config();
 const app  = express();
-const PORT = process.env.PORT || 3000;
+const chatbotController = require('./controllers/chatbotController');
+const PORT = process.env.PORT || 4000;
 
 // ──────────── Middleware global ────────────
 app.use(cors());            // CORS abierto –ajusta origin en prod
@@ -55,3 +56,10 @@ app.use('/api/ratings', ratRoutes);
 // export pdf y csv
 const exporRoutes = require('./routes/export.routes');
 app.use('/api/export', exporRoutes);
+
+// Ruta del chatbot 
+app.post('/api/chatbot', chatbotController.handleMessage);
+
+app.listen(4000, () => {
+  console.log('Server running on port 3000');
+});

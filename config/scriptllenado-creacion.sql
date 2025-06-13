@@ -13,6 +13,18 @@ CREATE TABLE users (
   creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+/* Usuario para pruebas */
+INSERT INTO users (nombre, correo, contrasena, telefon, identificacion, foto_url, preferencias)
+VALUES (
+    'Juan Pérez',
+    'juan.perez@example.com',
+    'contraseña1234',
+    '8887776655',
+    '123456789',
+    'https://example.com/fotos/juan_perez.jpg',
+    'Recibir boletines, modo oscuro activado, notificaciones de eventos'
+);
+
 /* nuevo cambio hoy 6/7/2025 daniela goat*/
 ALTER TABLE users
   ADD COLUMN contacto      VARCHAR(120) NULL,
@@ -32,6 +44,8 @@ WHERE  correo = 'corralesjosh39@gmail.com';
 
 ALTER TABLE users
   CHANGE COLUMN telefon  telefono  CHAR(8);
+
+INSERT INTO users
 
 ALTER TABLE experiences
   MODIFY COLUMN ubicacion VARCHAR(500);   -- o bien  TEXT
