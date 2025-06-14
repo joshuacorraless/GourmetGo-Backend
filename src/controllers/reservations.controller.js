@@ -144,7 +144,7 @@ exports.create = async (req, res) => {
 exports.listMine = async (req, res) => {
   const userId = req.user.id;
   const [rows] = await db.query(
-    `SELECT r.*, e.nombre AS experiencia, e.ubicacion
+    `SELECT r.*, e.nombre AS experiencia, e.ubicacion, e.fecha_hora
        FROM reservations r
        JOIN experiences e ON e.id = r.experience_id
       WHERE r.user_id = ?
