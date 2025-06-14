@@ -50,6 +50,18 @@ exports.create = async (req, res) => {
     [qrBase64, result.insertId]
   );
 
+  await db.query(
+    `UPDATE experiences
+     SET capacidad = ?, estado = ?
+     WHERE id = ?`,
+    [
+      exp.capacidad-cantidad,
+      exp.capacidad-cantidad === 0 ? 'Agotado' : exp.estado,
+      experience_id
+    ]
+  );
+
+
   const qrBuffer = Buffer.from(qrBase64.split(',')[1], 'base64');
 
   /* 5) Enviar correo al usuario con la confirmación */
