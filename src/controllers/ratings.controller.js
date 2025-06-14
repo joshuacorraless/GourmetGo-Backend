@@ -26,7 +26,7 @@ exports.create = async (req, res) => {
   /* 3) Insertar rating */
   await db.query(
     `INSERT INTO ratings (reservation_id, puntuacion, comentario,imagen_url)
-     VALUES (?,?,?)`,
+     VALUES (?,?,?,?)`,
     [reservation_id, puntuacion, comentario,imagen_url|| null]
   );
 
