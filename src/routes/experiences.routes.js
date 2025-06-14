@@ -9,6 +9,7 @@ const v         = require('../middlewares/validators');
 router.get('/',        ctrl.getAll);
 router.get('/:id',     ctrl.getById);
 router.post('/filtrar',        ctrl.getFiltered);
+router.get('/:chefId', experiencesController.getByChef);
 
 /* Protegidas (CHEF) */
 router.post('/',
