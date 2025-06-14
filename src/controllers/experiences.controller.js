@@ -182,7 +182,7 @@ exports.getByChef = async (req, res) => {
 
     const [rows] = await db.query(
       `SELECT e.*, u.nombre AS anfitrion,
-              (SELECT COUNT(*) FROM reservas r WHERE r.experience_id = e.id) AS reservas_count
+              (SELECT COUNT(*) FROM reservations r WHERE r.experience_id = e.id) AS reservas_count
          FROM experiences e
          JOIN users u ON u.id = e.host_id
        WHERE e.host_id = ?
