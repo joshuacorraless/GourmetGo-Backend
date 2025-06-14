@@ -120,15 +120,23 @@ exports.forgotPassword = async (req, res) => {
 
     /* 4) Enviar email */
     await transporter.sendMail({
-      from: `"GourmetGo" <${process.env.EMAIL_USER}>`,
-      to: correo,
-      subject: 'Contraseña temporal – GourmetGo',
-      html: `
-        <p>Hola,</p>
-        <p>Tu contraseña temporal es: <b>${tempPass}</b></p>
-        <p>Inicia sesión y cámbiala inmediatamente.</p>
-      `
-    });
+    from: `"GourmetGo" <${process.env.EMAIL_USER}>`,
+    to: correo,
+    subject: 'Tu nueva contraseña temporal – GourmetGo',
+    html: `
+      <div style="font-family: Arial, sans-serif; background-color: #fdfdfd; padding: 20px; border: 1px solid #eaeaea; border-radius: 8px; max-width: 500px; margin: 0 auto;">
+        <h2 style="color: #ff6f61; text-align: center;">GourmetGo</h2>
+        <p style="font-size: 16px; color: #333;">Hola,</p>
+        <p style="font-size: 16px; color: #333;">Hemos generado una nueva contraseña temporal para tu cuenta:</p>
+        <div style="background-color: #ffeae6; border-left: 4px solid #ff6f61; padding: 10px 15px; margin: 20px 0; border-radius: 5px;">
+          <p style="font-size: 18px; color: #ff3c00; font-weight: bold; margin: 0;">${tempPass}</p>
+        </div>
+        <p style="font-size: 16px; color: #333;">Por seguridad, te recomendamos iniciar sesión lo antes posible y cambiarla desde tu perfil.</p>
+        <p style="font-size: 14px; color: #999; text-align: center; margin-top: 30px;">¿No solicitaste esta contraseña? Ignora este mensaje o contáctanos.</p>
+      </div>
+    `
+  });
+
 
     res.json({ msg: 'Contraseña temporal enviada a tu correo' });
   } catch (err) {
