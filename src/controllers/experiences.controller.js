@@ -173,8 +173,7 @@ exports.remove = async (req, res) => {
 //experiencias de un chef
 exports.getByChef = async (req, res) => {
   try {
-    const chefId = req.params.chefId;
-    
+    const chefId = req.params.chefId; 
     // Validar que chefId es un número
     if (!chefId || isNaN(chefId)) {
       return res.status(400).json({ msg: 'ID de chef inválido' });
@@ -184,15 +183,15 @@ exports.getByChef = async (req, res) => {
       `SELECT e.*, u.nombre AS anfitrion,
               (SELECT COUNT(*) FROM reservations r WHERE r.experience_id = e.id) AS reservas_count
          FROM experiences e
-         JOIN users u ON u.id = e.host_id
-       WHERE e.host_id = ?
+         JOIN users u ON u.id = e.chef_id
+       WHERE e.chef_id = ?  
        ORDER BY e.fecha_hora DESC`,
-      [chefId]
+      [chefId]  // ✅ Usando la variable correcta
     );
 
     res.json(rows);
   } catch (error) {
     console.error('Error obteniendo experiencias del chef:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 };
