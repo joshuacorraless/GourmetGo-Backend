@@ -57,7 +57,7 @@ exports.create = async (req, res) => {
 exports.listByExperience = async (req, res) => {
   const expId = req.params.id;
   const [rows] = await db.query(
-    `SELECT r.id, r.puntuacion, r.comentario, r.creado_en,
+    `SELECT r.id, r.puntuacion, r.comentario, r.creado_en, r.imagen_url,
             u.nombre AS usuario
        FROM ratings r
        JOIN reservations re ON re.id = r.reservation_id
