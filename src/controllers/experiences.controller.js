@@ -7,7 +7,7 @@ exports.create = async (req, res) => {
   const hostId = req.user.id;               // CHEF o RESTAURANT
   const {
     nombre, descripcion, fecha_hora, ubicacion,
-    capacidad, precio, duracion_h, categoria, requisitos,menu_text,menu_img,img_url,estado
+    capacidad, precio, duracion_h, categoria, requisitos, menu_text, menu_img, img_url, estado
   } = req.body;
 
   const menuTextVal = menu_text || null;
@@ -15,11 +15,11 @@ exports.create = async (req, res) => {
 
   await db.query(
     `INSERT INTO experiences
-      (host_id, nombre, descripcion, fecha_hora, ubicacion,
-       capacidad, precio, duracion_h, categoria, requisitos,estado,img_url,menu_text,menu_img)
-     VALUES (?,?,?,?,?,?,?,?,?,?)`,
+      (chef_id, nombre, descripcion, fecha_hora, ubicacion,
+       capacidad, precio, duracion_h, categoria, requisitos, estado, img_url, menu_text, menu_img)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     [hostId, nombre, descripcion, fecha_hora, ubicacion,
-     capacidad, precio, duracion_h, categoria, requisitos,estado,img_url,menuTextVal, menuImgVal]
+     capacidad, precio, duracion_h, categoria, requisitos, estado, img_url, menuTextVal, menuImgVal]
   );
 
   res.status(201).json({ msg: 'Experiencia creada' });
@@ -51,9 +51,6 @@ exports.getFiltered = async (req, res) => {
   }
 };
 
-
-
-
 /* ---------- Listar todas ---------- */
 exports.getAll = async (_req, res) => {
   const [rows] = await db.query(
@@ -81,7 +78,7 @@ exports.update = async (req, res) => {
   const hostId = req.user.id;
 
   const [rows] = await db.query(
-    'SELECT * FROM experiences WHERE id = ? AND host_id = ?',
+    'SELECT * FROM experiences WHERE id = ? AND chef_id = ?',
     [id, hostId]
   );
   if (!rows.length) return res.status(403).json({ msg: 'No autorizado' });
@@ -119,8 +116,8 @@ exports.requestDelete = async (req, res) => {
   const [rows] = await db.query(
     `SELECT e.*, u.correo
        FROM experiences e
-       JOIN users u ON u.id = e.host_id
-     WHERE e.id = ? AND host_id = ?`,
+       JOIN users u ON u.id = e.chef_id
+     WHERE e.id = ? AND chef_id = ?`,
     [id, hostId]
   );
   if (!rows.length) return res.status(403).json({ msg: 'No autorizado' });
@@ -186,12 +183,12 @@ exports.getByChef = async (req, res) => {
          JOIN users u ON u.id = e.chef_id
        WHERE e.chef_id = ?  
        ORDER BY e.fecha_hora DESC`,
-      [chefId]  // ✅ Usando la variable correcta
+      [chefId]  
     );
 
     res.json(rows);
   } catch (error) {
     console.error('Error obteniendo experiencias del chef:', error);
-    res.status(500).json({ error: 'Error interno del servidor' });
-  }
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
 };
