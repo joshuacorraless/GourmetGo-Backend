@@ -3,7 +3,7 @@ const db = require('../../config/db');
 /* ---------- Crear rating ---------- */
 exports.create = async (req, res) => {
   const userId = req.user.id;
-  const { reservation_id, puntuacion, comentario } = req.body;
+  const { reservation_id, puntuacion, comentario,imagen_url } = req.body;
 
   /* 1) Verificar reserva del usuario y estado Asistido */
   const [[resv]] = await db.query(
@@ -25,9 +25,9 @@ exports.create = async (req, res) => {
 
   /* 3) Insertar rating */
   await db.query(
-    `INSERT INTO ratings (reservation_id, puntuacion, comentario)
+    `INSERT INTO ratings (reservation_id, puntuacion, comentario,imagen_url)
      VALUES (?,?,?)`,
-    [reservation_id, puntuacion, comentario]
+    [reservation_id, puntuacion, comentario,imagen_url|| null]
   );
 
   /* 4) Calcular nuevo promedio y actualizar experiencia */
