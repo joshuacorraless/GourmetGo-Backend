@@ -7,16 +7,19 @@ exports.create = async (req, res) => {
   const hostId = req.user.id;               // CHEF o RESTAURANT
   const {
     nombre, descripcion, fecha_hora, ubicacion,
-    capacidad, precio, duracion_h, categoria, requisitos
+    capacidad, precio, duracion_h, categoria, requisitos,menu_text,menu_img,img_url,estado
   } = req.body;
+
+  const menuTextVal = menu_text || null;
+  const menuImgVal = menu_img || null;
 
   await db.query(
     `INSERT INTO experiences
       (host_id, nombre, descripcion, fecha_hora, ubicacion,
-       capacidad, precio, duracion_h, categoria, requisitos)
+       capacidad, precio, duracion_h, categoria, requisitos,estado,img_url,menu_text,menu_img)
      VALUES (?,?,?,?,?,?,?,?,?,?)`,
     [hostId, nombre, descripcion, fecha_hora, ubicacion,
-     capacidad, precio, duracion_h, categoria, requisitos]
+     capacidad, precio, duracion_h, categoria, requisitos,estado,img_url,menuTextVal, menuImgVal]
   );
 
   res.status(201).json({ msg: 'Experiencia creada' });
