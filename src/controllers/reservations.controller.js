@@ -29,6 +29,18 @@ exports.create = async (req, res) => {
   if (exp.capacidad-usado < cantidad)
     return res.status(400).json({ msg: 'No hay suficientes espacios' });
 
+  const [[{ count }]] = await db.query(
+    `SELECT COUNT(*) AS count
+      FROM reservations
+      WHERE nombre_entrada = ?`,
+    [nombre_entrada]
+  );
+
+  if (count > 0) {
+    return res.status(400).json({ msg: 'Ya existe una reserva con ese nombre de entrada' });
+  }
+
+
   /* 2) Insertar reserva */
   const [result] = await db.query(
     `INSERT INTO reservations
