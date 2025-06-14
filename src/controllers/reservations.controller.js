@@ -31,9 +31,9 @@ exports.create = async (req, res) => {
 
   const [[{ count }]] = await db.query(
     `SELECT COUNT(*) AS count
-      FROM reservations
-      WHERE nombre_entrada = ?`,
-    [nombre_entrada]
+    FROM reservations
+    WHERE nombre_entrada = ? AND experience_id = ?`,
+    [nombre_entrada, experience_id]
   );
 
   if (count > 0) {
