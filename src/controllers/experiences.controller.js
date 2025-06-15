@@ -151,13 +151,10 @@ exports.requestDelete = async (req, res) => {
 
 /* ---------- Borrar experiencia ---------- */
 exports.remove = async (req, res) => {
-  // Verificar que el cuerpo existe
-  if (!req.body || !req.body.code) {
-    return res.status(400).json({ msg: 'Cuerpo de solicitud faltante o sin código' });
-  }
+ 
 
   const id = req.params.id;
-  const code = (req.body.code || '').toString().trim().toUpperCase();
+  const code = req.query.code;
 
   
 
