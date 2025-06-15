@@ -165,3 +165,85 @@ exports.listMine = async (req, res) => {
   );
   res.json(rows);
 };
+exports.getUsersByExperience = async (req, res) => {
+  const { experience_id } = req.params;
+
+  try {
+    // 1. Verificar que la experiencia existe
+    const [[experience]] = await db.query(
+      `SELECT id, nombre FROM experiences WHERE id = ?`,
+      [experience_id]
+    );
+
+    if (!experience) {
+      return res.status(404).json({ msg: 'Experiencia no encontrada' });
+    }
+
+    // 2. Obtener todas las reservas para esta experiencia
+    const [reservations] = await db.query(
+      `SELECT 
+         r.id AS reservation_id,
+         r.nombre_entrada AS guest_name,
+         r.correo_entrada AS guest_email,
+         r.telefono_entry AS guest_phone,
+         r.cantidad AS guests_count,
+         r.estado AS reservation_status,
+         r.creado_en AS reservation_date,
+         r.codigo_qr AS qr_code,
+         u.id AS user_id,
+         u.nombre AS user_name,
+         u.foto_url AS user_photo
+       FROM reservations r
+       LEFT JOIN users u ON u.id = r.user_id
+       WHERE r.experience_id = ?
+       ORDER BY r.creado_en DESC`,
+      [experience_id]
+    );
+
+    // 3. Calcular estadísticas
+    const [[stats]] = await db.query(
+      `SELECT 
+         COUNT(*) AS total_reservations,
+         SUM(cantidad) AS total_guests,
+         SUM(CASE WHEN estado = 'Confirmada' THEN cantidad ELSE 0 END) AS confirmed_guests,
+         SUM(CASE WHEN estado = 'Asistido' THEN cantidad ELSE 0 END) AS attended_guests,
+         SUM(CASE WHEN estado = 'Cancelada' THEN cantidad ELSE 0 END) AS canceled_guests
+       FROM reservations
+       WHERE experience_id = ?`,
+      [experience_id]
+    );
+
+    // 4. Obtener información de la experiencia
+    const [[experienceDetails]] = await db.query(
+      `SELECT 
+         e.nombre AS experience_name,
+         e.fecha_hora AS experience_date,
+         e.ubicacion AS location,
+         e.capacidad AS capacity,
+         e.precio AS price_per_guest,
+         u.nombre AS chef_name,
+         u.foto_url AS chef_photo
+       FROM experiences e
+       JOIN users u ON u.id = e.chef_id
+       WHERE e.id = ?`,
+      [experience_id]
+    );
+
+    res.json({
+      experience: {
+        id: experience_id,
+        ...experienceDetails,
+        remaining_capacity: experienceDetails.capacity - stats.total_guests
+      },
+      reservations,
+      statistics: {
+        ...stats,
+        total_revenue: stats.confirmed_guests * experienceDetails.price_per_guest
+      }
+    });
+
+  } catch (error) {
+    console.error('Error al obtener usuarios por experiencia:', error);
+    res.status(500).json({ msg: 'Error al obtener la lista de reservas' });
+  }
+};

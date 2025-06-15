@@ -17,5 +17,6 @@ router.get('/mine',
   verifyJwt,
   ctrl.listMine
 );
+router.get('/experience/:experience_id/users', ctrl.getUsersByExperience);
 
 module.exports = router;
