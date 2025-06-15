@@ -179,7 +179,7 @@ exports.getUsersByExperience = async (req, res) => {
       return res.status(404).json({ msg: 'Experiencia no encontrada' });
     }
 
-    // 2. Obtener todas las reservas para esta experiencia
+    // 2. Obtener todas las reservas para esta experiencia (con formato explícito)
     const [reservations] = await db.query(
       `SELECT 
          r.id AS reservation_id,
@@ -188,7 +188,7 @@ exports.getUsersByExperience = async (req, res) => {
          r.telefono_entry AS guest_phone,
          r.cantidad AS guests_count,
          r.estado AS reservation_status,
-         r.creado_en AS reservation_date,
+         DATE_FORMAT(r.creado_en, '%Y-%m-%d %H:%i:%s') AS reservation_date,
          r.codigo_qr AS qr_code,
          u.id AS user_id,
          u.nombre AS user_name,
@@ -200,7 +200,7 @@ exports.getUsersByExperience = async (req, res) => {
       [experience_id]
     );
 
-    // 3. Calcular estadísticas
+    // 3. Calcular estadísticas (con nombres de campos consistentes)
     const [[stats]] = await db.query(
       `SELECT 
          COUNT(*) AS total_reservations,
@@ -213,11 +213,12 @@ exports.getUsersByExperience = async (req, res) => {
       [experience_id]
     );
 
-    // 4. Obtener información de la experiencia
+    // 4. Obtener información detallada de la experiencia
     const [[experienceDetails]] = await db.query(
       `SELECT 
+         e.id,
          e.nombre AS experience_name,
-         e.fecha_hora AS experience_date,
+         DATE_FORMAT(e.fecha_hora, '%Y-%m-%dT%H:%i:%s.000Z') AS experience_date,
          e.ubicacion AS location,
          e.capacidad AS capacity,
          e.precio AS price_per_guest,
@@ -229,21 +230,39 @@ exports.getUsersByExperience = async (req, res) => {
       [experience_id]
     );
 
-    res.json({
+    // 5. Construir respuesta con estructura consistente
+    const response = {
       experience: {
-        id: experience_id,
         ...experienceDetails,
+        capacidad: experienceDetails.capacity, // Duplicado para compatibilidad
         remaining_capacity: experienceDetails.capacity - stats.total_guests
       },
-      reservations,
+      reservations: reservations.map(res => ({
+        ...res,
+        // Aseguramos que ningún campo sea null
+        guest_name: res.guest_name || 'Nombre no disponible',
+        guest_email: res.guest_email || '',
+        guest_phone: res.guest_phone || '',
+        guests_count: res.guests_count || 0,
+        reservation_status: res.reservation_status || 'Confirmada'
+      })),
       statistics: {
-        ...stats,
-        total_revenue: stats.confirmed_guests * experienceDetails.price_per_guest
+        total_guests: stats.total_guests || 0,
+        confirmed_guests: stats.confirmed_guests || 0,
+        attended_guests: stats.attended_guests || 0,
+        canceled_guests: stats.canceled_guests || 0,
+        total_revenue: (stats.confirmed_guests * experienceDetails.price_per_guest) || 0
       }
-    });
+    };
+
+    // 6. Enviar respuesta
+    res.json(response);
 
   } catch (error) {
-    console.error('Error al obtener usuarios por experiencia:', error);
-    res.status(500).json({ msg: 'Error al obtener la lista de reservas' });
+    console.error('Error al obtener reservas por experiencia:', error);
+    res.status(500).json({ 
+      msg: 'Error al obtener la lista de reservas',
+      error: error.message 
+    });
   }
 };
