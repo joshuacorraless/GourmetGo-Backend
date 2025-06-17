@@ -1,5 +1,5 @@
 const chatbotResponses = {
-  "hola": "¡Hola! Bienvenido a GourmetGo. ¿Te gustaría hacer una reserva, ver menús o conocer más sobre nuestras experiencias?",
+  "hola": "¡Hola! Bienvenido a GourmetGo. Puedes preguntarme sobre: 'reservar', 'menu', 'ubicación', 'calificar', 'experiencias disponibles', 'cómo funciona el QR', 'enviar correo', 'promociones', 'cambiar datos de reserva', 'cómo registrarme', 'fecha válida' o 'cancelar reserva'.",
   "reservar": "Para realizar una reserva, abre la app y ve a 'Mis Reservas' > 'Nueva Reserva'. Elige el evento y el número de personas, luego confirma.",
   "menu": "Puedes ver el menú en la sección 'Experiencias', seleccionando el evento que más te guste. El menú estará disponible en la descripción del evento.",
   "ubicación": "La ubicación del evento será visible en la página de cada experiencia, junto con un enlace interactivo para Google Maps o Waze.",
@@ -13,7 +13,7 @@ const chatbotResponses = {
   "fecha válida": "Recuerda que solo se pueden reservar experiencias con fechas futuras. Si eliges una fecha pasada, el sistema te alertará para que la modifiques.",
   "cancelar reserva": "Si necesitas cancelar tu reserva, ve a 'Mis Reservas' y selecciona la opción de cancelar. Recibirás un correo confirmando la cancelación.",
   "default": "Lo siento, no entendí. Escribe 'hola' para ver opciones.",
-  "charlie" : "jaja"
+  "charlie" : "jaja" 
 };
 
 exports.handleMessage = (req, res) => {
