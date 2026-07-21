@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=0B172A" alt="Android" />
 </p>
 
-<sub>API modular para autenticación, experiencias, reservas, tickets QR y calificaciones verificadas.</sub>
+<sub>Autenticación, experiencias, reservas con QR y calificaciones en una API para Android.</sub>
 
 </div>
 
@@ -40,11 +40,11 @@
   </tr>
 </table>
 
-## Producto
+## Servicio
 
-GourmetGo conecta usuarios, chefs y restaurantes alrededor de experiencias culinarias reservables desde una aplicación Android. Este backend sostiene el flujo operativo completo: registro, catálogo, filtros, reserva, confirmación por correo, ticket QR, asistencia y calificación posterior.
+GourmetGo conecta usuarios, chefs y restaurantes alrededor de experiencias culinarias reservables desde Android. El backend cubre el recorrido principal del producto: registro, catálogo, filtros, reserva, confirmación por correo, ticket QR, asistencia y calificación posterior.
 
-Proyecto universitario desarrollado con criterios de backend productivo: contratos HTTP simples, modelo relacional, autenticación por roles y separación directa entre rutas, controladores, middlewares y configuración.
+Proyecto universitario trabajado como backend funcional para una aplicación Android, con contratos HTTP simples, modelo relacional, autenticación por roles y separación clara entre rutas, controladores, middlewares y configuración.
 
 ## Superficie funcional
 
@@ -56,7 +56,7 @@ Proyecto universitario desarrollado con criterios de backend productivo: contrat
 | Perfil | Lectura y actualización del usuario autenticado con reglas por rol |
 | Calificaciones | Reseñas habilitadas solo para reservas asistidas y promedio actualizado por experiencia |
 | Exportación | Payloads JSON para ticket y reservas propias |
-| Soporte | Chatbot determinístico para preguntas frecuentes de la app |
+| Soporte | Chatbot de respuestas guiadas para preguntas frecuentes de la app |
 
 ## Arquitectura
 
@@ -74,7 +74,7 @@ src
   index.js                    arranque de Express
 ```
 
-La organización evita capas innecesarias y mantiene cada responsabilidad visible. Las rutas definen la superficie pública, los controladores concentran los flujos de negocio, los middlewares protegen el acceso y la configuración desacopla infraestructura de ejecución.
+La organización mantiene cada responsabilidad en una zona fácil de ubicar. Las rutas definen la superficie pública, los controladores concentran los flujos de negocio, los middlewares protegen el acceso y la configuración deja separadas las piezas de infraestructura.
 
 ## Modelo de dominio
 
@@ -93,7 +93,7 @@ La organización evita capas innecesarias y mantiene cada responsabilidad visibl
 | Auth | Registro de usuarios y anfitriones, login, recuperación y cambio de contraseña |
 | Users | Consulta y edición del perfil autenticado |
 | Experiences | Listado, detalle, filtrado, creación, edición y eliminación protegida |
-| Reservations | Creación de reservas, historial propio, asistentes y métricas por experiencia |
+| Reservations | Creación de reservas, historial propio, asistentes y resumen por experiencia |
 | Ratings | Registro y consulta de calificaciones asociadas a asistencia |
 | Export | Datos estructurados para tickets y reservas |
 | Assistant | Respuestas guiadas para dudas frecuentes |
@@ -102,13 +102,13 @@ La organización evita capas innecesarias y mantiene cada responsabilidad visibl
 
 | Decisión | Impacto |
 | --- | --- |
-| Autenticación con Bearer Token | Cada operación privada conserva contexto de usuario y rol |
+| Autenticación con Bearer Token | Las rutas privadas reciben usuario y rol desde el token |
 | Hash de contraseñas con bcrypt | Las credenciales no se almacenan en texto plano |
-| Administración limitada a `CHEF` | La operación de experiencias queda separada del consumo del usuario final |
+| Administración limitada por rol operativo | La operación de experiencias queda separada del consumo del usuario final |
 | Reserva contra cupo disponible | La API bloquea sobreventa antes de persistir la reserva |
-| QR embebido en base64 | El cliente móvil recibe un ticket portable sin depender de archivos externos |
+| QR embebido en base64 | El cliente móvil recibe el ticket sin depender de archivos externos |
 | Eliminación con código temporal | Las acciones destructivas agregan una confirmación por correo |
-| Rating posterior a asistencia | La reputación se construye desde participación verificada |
+| Rating posterior a asistencia | Solo las reservas marcadas como asistidas pueden generar calificaciones |
 
 ## Ejecución local
 
@@ -135,4 +135,4 @@ npm run dev
 
 ## Alcance
 
-GourmetGo es una base backend compacta para operar reservas gastronómicas desde una experiencia móvil. El repositorio demuestra diseño de API, persistencia relacional, seguridad práctica y reglas de negocio aplicadas a un producto académico con presentación profesional.
+GourmetGo es una base backend compacta para operar reservas gastronómicas desde una experiencia móvil. El repositorio reúne API REST, persistencia relacional, autenticación por roles y reglas de reserva aplicadas a un proyecto académico.

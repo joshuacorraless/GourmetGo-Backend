@@ -5,7 +5,7 @@ const db          = require('../config/db');
 const errorHandler= require('./middlewares/errorHandler');
 
 dotenv.config();
-const app  = express();
+const app = express();
 const chatbotController = require('./controllers/chatbotController');
 const PORT = process.env.PORT || 4000;
 
@@ -22,17 +22,6 @@ app.get('/db-test', async (_req, res, next) => {
     next(err);
   }
 });
-
-
-
-// ──────────── Error handler global ────────────
-app.use(errorHandler);
-
-// ──────────── Levantar servidor ────────────
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Servidor escuchando en puerto ${PORT}`);
-});
-
 // ──────────── Aquí montare más rutas: ────────────
 
 const authRoutes = require('./routes/auth.routes');
@@ -60,6 +49,10 @@ app.use('/api/export', exporRoutes);
 // Ruta del chatbot 
 app.post('/api/chatbot', chatbotController.handleMessage);
 
-app.listen(4000, () => {
-  console.log('Server running on port 3000');
+// ──────────── Error handler global ────────────
+app.use(errorHandler);
+
+// ──────────── Levantar servidor ────────────
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Servidor escuchando en puerto ${PORT}`);
 });
