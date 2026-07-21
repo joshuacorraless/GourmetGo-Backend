@@ -2,124 +2,119 @@
 
 # GourmetGo Backend
 
-<img src="https://img.shields.io/badge/Node.js-1F7A43?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
-<img src="https://img.shields.io/badge/Express-24292F?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
-<img src="https://img.shields.io/badge/MySQL-0F5B8C?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
-<img src="https://img.shields.io/badge/JWT-3B2E58?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT" />
+**Backend REST para reservas gastronómicas móviles**
 
-API REST para la experiencia digital de reservas gastronómicas de GourmetGo.
+<p>
+  <img src="https://img.shields.io/badge/Node.js-1F7A43?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/Express-24292F?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+  <img src="https://img.shields.io/badge/MySQL-0F5B8C?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
+  <img src="https://img.shields.io/badge/JWT-2F2A45?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT" />
+  <img src="https://img.shields.io/badge/Nodemailer-C4473A?style=for-the-badge&logo=gmail&logoColor=white" alt="Nodemailer" />
+  <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=0B172A" alt="Android" />
+</p>
+
+<sub>API modular para autenticación, experiencias, reservas, tickets QR y calificaciones verificadas.</sub>
 
 </div>
 
-## Visión Del Proyecto
+<br />
 
-GourmetGo Backend es el servicio central de una aplicación móvil Android orientada a la reserva de experiencias gastronómicas en restaurantes, talleres y eventos culinarios. El sistema organiza el flujo completo entre usuarios, chefs o restaurantes anfitriones, reservas, confirmaciones por correo, códigos QR de entrada y calificaciones posteriores al evento.
+<table>
+  <tr>
+    <td><strong>Runtime</strong></td>
+    <td>Node.js</td>
+    <td><strong>Framework</strong></td>
+    <td>Express 5</td>
+  </tr>
+  <tr>
+    <td><strong>Database</strong></td>
+    <td>MySQL</td>
+    <td><strong>Security</strong></td>
+    <td>JWT, bcrypt, roles</td>
+  </tr>
+  <tr>
+    <td><strong>Client</strong></td>
+    <td>Android</td>
+    <td><strong>Messaging</strong></td>
+    <td>Nodemailer, Gmail SMTP</td>
+  </tr>
+</table>
 
-El proyecto fue desarrollado en contexto universitario para el curso de Requerimientos de Software, con enfoque en entregar una base funcional de backend que pudiera sostener una aplicación móvil real. La implementación prioriza una API clara, persistencia relacional, reglas de negocio explícitas y una separación sencilla entre rutas, controladores, middlewares y configuración.
+## Producto
 
-## Identidad Técnica
+GourmetGo conecta usuarios, chefs y restaurantes alrededor de experiencias culinarias reservables desde una aplicación Android. Este backend sostiene el flujo operativo completo: registro, catálogo, filtros, reserva, confirmación por correo, ticket QR, asistencia y calificación posterior.
 
-| Capa | Decisión |
+Proyecto universitario desarrollado con criterios de backend productivo: contratos HTTP simples, modelo relacional, autenticación por roles y separación directa entre rutas, controladores, middlewares y configuración.
+
+## Superficie funcional
+
+| Flujo | Resultado |
 | --- | --- |
-| Runtime | Node.js |
-| Framework HTTP | Express 5 |
-| Base de datos | MySQL mediante mysql2 con pool de conexiones |
-| Seguridad | JSON Web Tokens, contraseñas con bcrypt, validación de entrada |
-| Comunicación | Correos transaccionales con Nodemailer |
-| Confirmación de reservas | QR en base64 generado desde el backend |
-| Consumo principal | Aplicación Android creada en Android Studio |
+| Identidad | Registro diferenciado para usuarios y anfitriones, login JWT y recuperación de contraseña temporal |
+| Experiencias | Catálogo público, filtros, detalle, administración por anfitrión y eliminación protegida por código |
+| Reservas | Control de cupo, prevención de duplicados, generación de QR y correo transaccional |
+| Perfil | Lectura y actualización del usuario autenticado con reglas por rol |
+| Calificaciones | Reseñas habilitadas solo para reservas asistidas y promedio actualizado por experiencia |
+| Exportación | Payloads JSON para ticket y reservas propias |
+| Soporte | Chatbot determinístico para preguntas frecuentes de la app |
 
-## Capacidades Del Backend
-
-| Área | Implementación |
-| --- | --- |
-| Autenticación | Registro diferenciado para usuarios y chefs, inicio de sesión, recuperación de contraseña y cambio obligatorio de contraseña temporal |
-| Gestión de perfiles | Lectura y actualización del perfil autenticado con reglas distintas por rol |
-| Experiencias | Creación, edición, consulta, filtrado y eliminación protegida con código de confirmación por correo |
-| Reservas | Validación de cupo disponible, prevención de duplicados por nombre de entrada, generación de QR y envío de confirmación por email |
-| Ratings | Calificación solo después de asistencia, control de una calificación por reserva y recálculo del promedio de la experiencia |
-| Exportación | Endpoints JSON preparados para ticket de reserva y listado de reservas propias |
-| Asistencia conversacional | Chatbot básico de respuestas guiadas para dudas frecuentes de la aplicación |
-
-## Arquitectura Del Repositorio
+## Arquitectura
 
 ```text
-GourmetGo-Backend
-  config
-    db.js
-    mail.js
-    scriptllenado-creacion.sql
-  src
-    controllers
-    middlewares
-    routes
-    utils
-    index.js
+config
+  db.js                       pool MySQL
+  mail.js                     transporte SMTP
+  scriptllenado-creacion.sql  esquema y datos base
+
+src
+  controllers                 reglas de negocio
+  middlewares                 JWT, roles, validación, errores
+  routes                      contrato HTTP por dominio
+  utils                       generación de QR
+  index.js                    arranque de Express
 ```
 
-La estructura separa responsabilidades de forma directa. Las rutas exponen el contrato HTTP, los controladores concentran la lógica de negocio, los middlewares resuelven autenticación, autorización y validación, y la carpeta de configuración centraliza la conexión a MySQL y el transporte de correo.
+La organización evita capas innecesarias y mantiene cada responsabilidad visible. Las rutas definen la superficie pública, los controladores concentran los flujos de negocio, los middlewares protegen el acceso y la configuración desacopla infraestructura de ejecución.
 
-## Dominio Funcional
+## Modelo de dominio
 
-| Entidad | Propósito |
+| Entidad | Responsabilidad |
 | --- | --- |
-| users | Usuarios finales, chefs y restaurantes anfitriones |
-| experiences | Eventos gastronómicos con capacidad, fecha, precio, ubicación, categoría, menú e imagen |
-| reservations | Reservas asociadas a una experiencia, con datos de entrada, método de pago, estado y QR |
-| ratings | Opiniones posteriores a la asistencia, conectadas a reservas reales |
-| password_resets | Soporte para recuperación y cambio de contraseña temporal |
-| exp_delete_codes | Confirmación temporal para eliminación segura de experiencias |
-| faq | Base de preguntas frecuentes para soporte conversacional |
+| `users` | Perfiles de usuarios, chefs y restaurantes |
+| `experiences` | Eventos gastronómicos con cupo, precio, ubicación, menú, imagen y estado |
+| `reservations` | Reservas, método de pago, estado operativo y ticket QR |
+| `ratings` | Calificaciones vinculadas a reservas asistidas |
+| `exp_delete_codes` | Códigos de confirmación para eliminación de experiencias |
 
-## Contrato HTTP Principal
+## API principal
 
-| Método | Ruta | Uso |
-| --- | --- | --- |
-| POST | `/api/auth/register/user` | Registro de usuario final |
-| POST | `/api/auth/register/chef` | Registro de chef o restaurante |
-| POST | `/api/auth/login` | Autenticación y emisión de token JWT |
-| POST | `/api/auth/forgot-password` | Envío de contraseña temporal por correo |
-| PUT | `/api/auth/change-password` | Cambio de contraseña autenticado |
-| GET | `/api/users/me` | Consulta del perfil autenticado |
-| PUT | `/api/users/me` | Actualización del perfil autenticado |
-| GET | `/api/experiences` | Listado público de experiencias |
-| POST | `/api/experiences/filtrar` | Filtrado avanzado por provincia, categoría, precio, fecha y calificación |
-| GET | `/api/experiences/:id` | Detalle de experiencia |
-| GET | `/api/experiences/chef/:chefId` | Experiencias publicadas por un anfitrión |
-| POST | `/api/experiences` | Creación de experiencia para rol CHEF |
-| PUT | `/api/experiences/:id` | Actualización protegida de experiencia |
-| POST | `/api/experiences/:id/request-delete` | Solicitud de código para eliminar experiencia |
-| DELETE | `/api/experiences/:id` | Eliminación validada por código temporal |
-| POST | `/api/reservations` | Creación de reserva con QR y correo de confirmación |
-| GET | `/api/reservations/mine` | Reservas del usuario autenticado |
-| GET | `/api/reservations/experience/:experience_id/users` | Lista y métricas de reservas por experiencia |
-| POST | `/api/ratings` | Registro de calificación |
-| GET | `/api/ratings/experience/:id` | Calificaciones de una experiencia |
-| GET | `/api/export/ticket/:id` | Datos estructurados para ticket |
-| GET | `/api/export/reservations/mine` | Datos estructurados para exportación de reservas |
-| POST | `/api/chatbot` | Respuesta guiada para preguntas frecuentes |
-
-## Reglas De Negocio Destacadas
-
-| Regla | Resultado |
+| Dominio | Alcance |
 | --- | --- |
-| Las contraseñas se almacenan con hash bcrypt | La base de datos no conserva credenciales en texto plano |
-| Los endpoints privados requieren token Bearer | El backend identifica usuario y rol desde el JWT |
-| Solo un anfitrión CHEF puede crear o editar experiencias | La administración de eventos queda aislada del usuario final |
-| Una experiencia agotada no puede recibir más reservas | El cupo se protege antes de insertar la reserva |
-| Cada reserva genera un QR único en base64 | La app puede mostrar o exportar el comprobante sin depender de archivos externos |
-| La eliminación de experiencias requiere código temporal por correo | Se agrega una fricción de seguridad antes de borrar contenido operativo |
-| Una calificación exige reserva asistida | Las reseñas se vinculan a participación real |
+| Auth | Registro de usuarios y anfitriones, login, recuperación y cambio de contraseña |
+| Users | Consulta y edición del perfil autenticado |
+| Experiences | Listado, detalle, filtrado, creación, edición y eliminación protegida |
+| Reservations | Creación de reservas, historial propio, asistentes y métricas por experiencia |
+| Ratings | Registro y consulta de calificaciones asociadas a asistencia |
+| Export | Datos estructurados para tickets y reservas |
+| Assistant | Respuestas guiadas para dudas frecuentes |
 
-## Puesta En Marcha Local
+## Decisiones de dominio
 
-Instalar dependencias.
+| Decisión | Impacto |
+| --- | --- |
+| Autenticación con Bearer Token | Cada operación privada conserva contexto de usuario y rol |
+| Hash de contraseñas con bcrypt | Las credenciales no se almacenan en texto plano |
+| Administración limitada a `CHEF` | La operación de experiencias queda separada del consumo del usuario final |
+| Reserva contra cupo disponible | La API bloquea sobreventa antes de persistir la reserva |
+| QR embebido en base64 | El cliente móvil recibe un ticket portable sin depender de archivos externos |
+| Eliminación con código temporal | Las acciones destructivas agregan una confirmación por correo |
+| Rating posterior a asistencia | La reputación se construye desde participación verificada |
+
+## Ejecución local
 
 ```bash
 npm install
 ```
-
-Crear un archivo `.env` con las variables de ejecución.
 
 ```env
 PORT=4000
@@ -128,45 +123,16 @@ DB_USER=root
 DB_PASSWORD=tu_password
 DB_NAME=gourmetgo
 DB_PORT=3306
-JWT_SECRET=clave_segura_para_desarrollo
-EMAIL_USER=correo@gmail.com
-EMAIL_PASS=app_password_de_google
+JWT_SECRET=clave_local_de_desarrollo
+EMAIL_USER=tu_cuenta_gmail
+EMAIL_PASS=tu_google_app_password
 ```
-
-Preparar la base de datos con el script incluido.
 
 ```bash
 mysql -u root -p < config/scriptllenado-creacion.sql
-```
-
-Ejecutar el servidor en modo desarrollo.
-
-```bash
 npm run dev
 ```
 
-Ejecutar el servidor en modo estándar.
+## Alcance
 
-```bash
-npm start
-```
-
-## Calidad Y Criterios De Implementación
-
-| Criterio | Aplicación |
-| --- | --- |
-| Validación temprana | express-validator protege el contrato de entrada antes de llegar al controlador |
-| Separación por dominio | Cada módulo agrupa rutas y controladores por responsabilidad funcional |
-| Persistencia relacional | MySQL modela usuarios, experiencias, reservas, ratings y códigos temporales |
-| Seguridad práctica | JWT, bcrypt y códigos de confirmación cubren los flujos críticos del sistema |
-| Integración móvil | Las respuestas JSON están pensadas para consumo directo desde Android |
-
-## Nota Académica
-
-Este repositorio corresponde a una entrega universitaria, pero fue estructurado como un servicio backend presentable, mantenible y conectado a necesidades reales de producto. GourmetGo funciona como una demostración de diseño de API, modelado relacional, autenticación, reglas de negocio y soporte a una aplicación móvil orientada a reservas.
-
-<div align="center">
-
-Backend diseñado para convertir una experiencia gastronómica en un flujo digital completo.
-
-</div>
+GourmetGo es una base backend compacta para operar reservas gastronómicas desde una experiencia móvil. El repositorio demuestra diseño de API, persistencia relacional, seguridad práctica y reglas de negocio aplicadas a un producto académico con presentación profesional.
